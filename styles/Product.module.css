@@ -52,6 +52,12 @@
   height: 50px;
 }
 
+.sizeActive {
+  filter: drop-shadow(0 0 3px #d1411e);
+  transform: scale(1.15);
+  z-index: 2;
+}
+
 .number {
   position: absolute;
   top: -5px;

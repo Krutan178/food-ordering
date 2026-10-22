@@ -20,7 +20,7 @@ function Burger({ burgerList }) {
           <link rel="icon" href="/favicon.ico" />
         </Head>
         <Featured />
-        {<AddButton setClose={setClose} />}
+        {<AddButton setClose={setClose} admin={admin} />}
         <BurgerList burgerList={burgerList} />
         {!close && <Add1 setClose={setClose} />}
       </div>
@@ -50,18 +50,18 @@ function Burger({ burgerList }) {
 
 
 export const getServerSideProps = async (ctx) => {
-    // const myCookie = ctx.req?.cookies || "";
-    // let admin = false;
+    const myCookie = ctx.req?.cookies || "";
+    let admin = false;
 
-    // if (myCookie.token === process.env.TOKEN) {
-    //     admin = true;
-    // }
+    if (myCookie.token === process.env.TOKEN) {
+        admin = true;
+    }
 
     const res = await axios.get("http://localhost:3000/api/products1");
     return {
         props: {
             burgerList: res.data,
-            // admin,
+            admin,
         },
     };
 };

@@ -52,18 +52,19 @@ const Product2 = ({ beverage}) => {
         <p className={styles.desc}>{beverage.desc}</p>
         <h3 className={styles.choose}>Choose the size</h3>
         <div className={styles.sizes}>
-          <div className={styles.size} onClick={() => handleSize(0)}>
-            <Image src="/img/size2.png" layout="fill" alt="" />
-            <span className={styles.number}>Small</span>
-          </div>
-          <div className={styles.size} onClick={() => handleSize(1)}>
-            <Image src="/img/size2.png" layout="fill" alt="" />
-            <span className={styles.number}>Medium</span>
-          </div>
-          <div className={styles.size} onClick={() => handleSize(2)}>
-            <Image src="/img/size2.png" layout="fill" alt="" />
-            <span className={styles.number}>Large</span>
-          </div>
+          {(beverage.prices.length === 3 ? ["Small", "Medium", "Large"] : ["Regular", "Large"]).map(
+            (sizeName, index) => (
+              <div
+                key={index}
+                className={`${styles.size} ${size === index ? styles.sizeActive : ""}`}
+                title={sizeName}
+                onClick={() => handleSize(index)}
+              >
+                <Image src="/img/size2.png" layout="fill" alt="" />
+                <span className={styles.number}>₹{beverage.prices[index]}</span>
+              </div>
+            )
+          )}
         </div>
         <h3 className={styles.choose}>Choose additional ingredients</h3>
         <div className={styles.ingredients}>
@@ -76,7 +77,9 @@ const Product2 = ({ beverage}) => {
                 className={styles.checkbox}
                 onChange={(e) => handleChange(e, option)}
               />
-              <label htmlFor="double">{option.text}</label>
+              <label htmlFor={option.text}>
+                {option.text} (+₹{option.price})
+              </label>
             </div>
           ))}
         </div>

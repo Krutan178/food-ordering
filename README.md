@@ -1,34 +1,119 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# 🍕 Food Ordering App
+
+A full-stack food ordering website for a restaurant — browse the pizza, burger and beverage menus, customise items with sizes and extra toppings, place cash-on-delivery or PayPal (sandbox) orders, and manage everything from a protected admin panel.
+
+Built with the Next.js **Pages Router**.
+
+## Features
+
+- 🗂 Separate menus: **Pizzas**, **Burgers**, **Beverages** (each lives in its own MongoDB collection)
+- 🛒 Cart with sizes, extra toppings, quantity and totals (Redux Toolkit)
+- 💳 Checkout — Cash on Delivery **or** live PayPal checkout buttons (sandbox for testing)
+- 🧾 Order tracking page (`/orders/[id]`) with status progression graphic
+- 🔐 Admin panel (`/admin`) — protected page + API routes: create/delete products, advance order status
+- 📸 Product images upload to Cloudinary straight from the admin "Add Item" modals
+- 🗄️ MongoDB Atlas (free cluster) with an auto-cached connection across dev hot reloads
+
+## Tech Stack
+
+| Layer | Tech |
+|---|---|
+| Frontend / Backend | Next.js 14 (Pages Router), React 18 |
+| State | Redux Toolkit (+ react-redux 9) |
+| Database | MongoDB Atlas via Mongoose 8 |
+| Payments | `@paypal/react-paypal-js` (sandbox by default) |
+| Image hosting | Cloudinary (unsigned upload preset) |
+| Maps (contact page) | google-map-react |
 
 ## Getting Started
 
-First, run the development server:
-
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+### 1. Environment variables (`.env`)
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+> ⚠️ `.env` is git-ignored — never commit it. Copy your own values:
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+```
+MONGO_URL = mongodb+srv://<user>:<password>@<cluster>.mongodb.net/pizza?retryWrites=true&w=majority
+ADMIN_USERNAME = admin
+ADMIN_PASSWORD = <strong-password>
+TOKEN = <random-string-used-as-admin-session-cookie-value>
 
-## Learn More
+# Optional — falls back to the demo tutorial account until you add your own:
+# NEXT_PUBLIC_PAYPAL_CLIENT_ID = <your sandbox client id>
+# NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME = <your cloud name>
+```
 
-To learn more about Next.js, take a look at the following resources:
+- **MongoDB URL:** MongoDB users must URL-encode special characters in their password (e.g. `@` → `%40`).
+- **Cloudinary:** create an **unsigned** upload preset named `uploads` in your Cloudinary dashboard (Settings → Upload).
+- **PayPal:** create an app under *Sandbox* at [developer.paypal.com](https://developer.paypal.com) and paste its Client ID.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 2. Seed the menu (optional)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+```bash
+node scripts/seed.js
+```
 
-## Deploy on Vercel
+Loads 10 pizzas, 10 burgers and 10 beverages (with sample images, sizes and toppings). ⚠️ Re-running **replaces all products** in those collections — manage a real menu through the admin panel instead.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### 3. Review without a database
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+```bash
+node scripts/review.js
+```
+
+Runs the site against a temporary in-memory MongoDB pre-seeded with sample products (nothing persists). Handy for demos — stop and restart anytime.
+
+## Admin panel
+
+| URL | Purpose |
+|---|---|
+| `/admin` | Product list (delete) + order list (advance status) |
+| `/admin/login` | Login with the `ADMIN_USERNAME` / `ADMIN_PASSWORD` from `.env` |
+
+The login session lasts 1 hour (cookie with the `TOKEN` value).
+
+## Scripts
+
+| Command | Description |
+|---|---|
+| `npm run dev` | Start the dev server |
+| `npm run build` + `npm start` | Production build & serve |
+| `npm run lint` | ESLint (`next/core-web-vitals`) |
+| `node scripts/seed.js` | Fill your Atlas collections with sample products |
+| `node scripts/review.js` | Demo the site on a throwaway in-memory DB |
+
+## Deployment (Vercel)
+
+1. Push the repo to GitHub (`.env` stays local).
+2. Import the project on [vercel.com](https://vercel.com) and add the environment variables from step 1 in the dashboard.
+3. Ensure your Atlas **Network Access** allows external IPs (`0.0.0.0/0` while developing).
+4. Before deploying: the hard-coded `http://localhost:3000` URLs in `getServerSideProps` / component calls should be moved to an environment-aware base URL.
+5. PayPal: remember INR is not a PayPal-supported currency — checkout runs in USD unless a local Indian gateway (e.g. Razorpay) is added for live orders.
+
+## Project Structure (short tour)
+
+```
+components/   # Navbar, menus, "Add item" modals (with Cloudinary upload)
+models/       # Mongoose schemas: Product, Product1 (burger), Product2 (beverage), Order
+pages/
+  api/        # REST endpoints: products(×3 collections), orders, login
+  admin/      # Admin dashboard + login
+  product*    # Item detail pages (size + topping selection)
+  orders/     # Order confirmation / tracking
+redux/        # cartSlice + store (addProduct, reset)
+scripts/      # seed.js, review.js
+util/mongo.js # Cached Atlas connection
+```
+
+## Security Checklist
+
+- ✅ `.env` git-ignored; rotate any credentials that were ever committed
+- ✅ Admin APIs (`POST`/`PUT`/`DELETE`) verify the session token server-side
+- ✅ Admin UI (Add Item button, panel) renders statically only for logged-in admins
+- ⏳ Before production: move external secrets (DB user, admin login, token) to strong values; consider httpOnly + HTTPS-only cookie flags
