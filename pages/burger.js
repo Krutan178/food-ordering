@@ -9,7 +9,7 @@ import BurgerList from "../components/BurgerList";
 import styles from "../styles/Home.module.css";
 
 
-function burger({ burgerList }) {
+function Burger({ burgerList }) {
     // return <h1>Hello, {props.name}</h1>;
     const [close, setClose] = useState(true);
     return (
@@ -27,7 +27,7 @@ function burger({ burgerList }) {
     );
   }
 
-  export default burger
+  export default Burger;
 
 // class Burger extends Component {
 //     render() {

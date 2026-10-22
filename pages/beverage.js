@@ -9,7 +9,7 @@ import BeverageList from "../components/BeverageList";
 import styles from "../styles/Home.module.css";
 
 
-function beverage({ beverageList }) {
+function Beverage({ beverageList }) {
     // return <h1>Hello, {props.name}</h1>;
     const [close, setClose] = useState(true);
     return (
@@ -27,7 +27,7 @@ function beverage({ beverageList }) {
     );
   }
 
-  export default beverage
+  export default Beverage;
 
 // class Burger extends Component {
 //     render() {

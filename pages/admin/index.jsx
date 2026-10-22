@@ -12,9 +12,7 @@ const Index = ({ orders, products }) => {
     console.log(id);
     try {
       const res = await axios.delete(
-        "http://localhost:3000/api/products/" + id,
-          "http://localhost:3000/api/products1/" + id,
-          "http://localhost:3000/api/products2/" + id
+        "http://localhost:3000/api/products/" + id
       );
       setPizzaList(pizzaList.filter((pizza) => pizza._id !== id));
     } catch (err) {

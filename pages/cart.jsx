@@ -167,6 +167,7 @@ const Cart = () => {
               <PayPalScriptProvider
                 options={{
                   "client-id":
+                    process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID ||
                     "AbUcUZyB1-EsLh44D5SuSPcFHZ1NKWX4Aiqxni1c-r8ZnLKJTzUycHyaW2l55iYIo1_1I6MyXNIt-6ek",
                   components: "buttons",
                   currency: "USD",
