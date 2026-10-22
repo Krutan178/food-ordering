@@ -9,7 +9,7 @@ import BeverageList from "../components/BeverageList";
 import styles from "../styles/Home.module.css";
 
 
-function Beverage({ beverageList }) {
+function Beverage({ beverageList, admin }) {
     // return <h1>Hello, {props.name}</h1>;
     const [close, setClose] = useState(true);
     return (

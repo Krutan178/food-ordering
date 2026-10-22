@@ -9,7 +9,7 @@ import BurgerList from "../components/BurgerList";
 import styles from "../styles/Home.module.css";
 
 
-function Burger({ burgerList }) {
+function Burger({ burgerList, admin }) {
     // return <h1>Hello, {props.name}</h1>;
     const [close, setClose] = useState(true);
     return (
