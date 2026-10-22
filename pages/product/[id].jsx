@@ -1,10 +1,10 @@
-import { BASE_URL } from "../../util/baseUrl";
 import styles from "../../styles/Product.module.css";
 import Image from "next/image";
 import { useState } from "react";
-import axios from "axios";
 import { useDispatch } from "react-redux";
 import { addProduct } from "../../redux/cartSlice";
+import dbConnect from "../../util/mongo";
+import ProductModel from "../../models/Product";
 
 const Product = ({ pizza }) => {
   const [price, setPrice] = useState(pizza.prices[0]);
@@ -100,12 +100,13 @@ const Product = ({ pizza }) => {
 };
 
 export const getServerSideProps = async ({ params }) => {
-  const res = await axios.get(
-    `${BASE_URL}/api/products/${params.id}`
+  await dbConnect();
+  const pizza = JSON.parse(
+    JSON.stringify(await ProductModel.findById(params.id))
   );
   return {
     props: {
-      pizza: res.data,
+      pizza,
     },
   };
 };

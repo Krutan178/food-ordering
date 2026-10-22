@@ -1,7 +1,9 @@
 import axios from "axios";
 import Image from "next/image";
 import { useState } from "react";
-import { BASE_URL } from "../../util/baseUrl";
+import dbConnect from "../../util/mongo";
+import Product from "../../models/Product";
+import Order from "../../models/Order";
 import styles from "../../styles/Admin.module.css";
 
 const Index = ({ orders, products }) => {
@@ -128,13 +130,14 @@ export const getServerSideProps = async (ctx) => {
     };
   }
 
-  const productRes = await axios.get(`${BASE_URL}/api/products`);
-  const orderRes = await axios.get(`${BASE_URL}/api/orders`);
+  await dbConnect();
+  const products = JSON.parse(JSON.stringify(await Product.find()));
+  const orders = JSON.parse(JSON.stringify(await Order.find()));
 
   return {
     props: {
-      orders: orderRes.data,
-      products: productRes.data,
+      orders,
+      products,
     },
   };
 };

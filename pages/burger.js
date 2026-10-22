@@ -1,4 +1,3 @@
-import axios from "axios";
 import Head from "next/head";
 import Image from "next/image";
 import { useState } from "react";
@@ -6,7 +5,8 @@ import Add1 from "../components/Add1";
 import AddButton from "../components/AddButton";
 import Featured from "../components/Featured";
 import BurgerList from "../components/BurgerList";
-import { BASE_URL } from "../util/baseUrl";
+import dbConnect from "../util/mongo";
+import Product1 from "../models/Product1";
 import styles from "../styles/Home.module.css";
 
 
@@ -58,10 +58,11 @@ export const getServerSideProps = async (ctx) => {
         admin = true;
     }
 
-    const res = await axios.get(`${BASE_URL}/api/products1`);
+    await dbConnect();
+    const burgerList = JSON.parse(JSON.stringify(await Product1.find()));
     return {
         props: {
-            burgerList: res.data,
+            burgerList,
             admin,
         },
     };

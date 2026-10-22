@@ -1,11 +1,11 @@
-import axios from "axios";
 import Head from "next/head";
 import { useState } from "react";
 import Add from "../components/Add";
 import AddButton from "../components/AddButton";
 import Featured from "../components/Featured";
 import PizzaList from "../components/PizzaList";
-import { BASE_URL } from "../util/baseUrl";
+import dbConnect from "../util/mongo";
+import Product from "../models/Product";
 import styles from "../styles/Home.module.css";
 
 export default function Home({ pizzaList, admin }) {
@@ -33,10 +33,11 @@ export const getServerSideProps = async (ctx) => {
     admin = true;
   }
 
-  const res = await axios.get(`${BASE_URL}/api/products`);
+  await dbConnect();
+  const pizzaList = JSON.parse(JSON.stringify(await Product.find()));
   return {
     props: {
-      pizzaList: res.data,
+      pizzaList,
       admin,
     },
   };

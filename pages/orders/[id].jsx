@@ -1,7 +1,7 @@
 import styles from "../../styles/Order.module.css";
 import Image from "next/image";
-import axios from "axios";
-import { BASE_URL } from "../../util/baseUrl";
+import dbConnect from "../../util/mongo";
+import OrderModel from "../../models/Order";
 
 const Order = ({ order }) => {
   const status = order.status;
@@ -115,9 +115,12 @@ const Order = ({ order }) => {
 };
 
 export const getServerSideProps = async ({ params }) => {
-  const res = await axios.get(`${BASE_URL}/api/orders/${params.id}`);
+  await dbConnect();
+  const order = JSON.parse(
+    JSON.stringify(await OrderModel.findById(params.id))
+  );
   return {
-    props: { order: res.data },
+    props: { order },
   };
 };
 
