@@ -1,3 +1,4 @@
+import { BASE_URL } from "../../util/baseUrl";
 import styles from "../../styles/Product.module.css";
 import Image from "next/image";
 import { useState } from "react";
@@ -101,7 +102,7 @@ const Product2 = ({ beverage}) => {
 
 export const getServerSideProps = async ({ params }) => {
   const res = await axios.get(
-    `http://localhost:3000/api/products2/${params.id}`
+    `${BASE_URL}/api/products2/${params.id}`
   );
   return {
     props: {

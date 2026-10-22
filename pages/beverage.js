@@ -6,6 +6,7 @@ import Add2 from "../components/Add2";
 import AddButton from "../components/AddButton";
 import Featured from "../components/Featured";
 import BeverageList from "../components/BeverageList";
+import { BASE_URL } from "../util/baseUrl";
 import styles from "../styles/Home.module.css";
 
 
@@ -57,7 +58,7 @@ export const getServerSideProps = async (ctx) => {
         admin = true;
     }
 
-    const res = await axios.get("http://localhost:3000/api/products2");
+    const res = await axios.get(`${BASE_URL}/api/products2`);
     return {
         props: {
             beverageList: res.data,

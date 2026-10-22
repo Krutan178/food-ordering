@@ -46,7 +46,7 @@ const Add2 = ({ setClose }) => {
         img: url,
       };
 
-      await axios.post("http://localhost:3000/api/products2", newProduct);
+      await axios.post("/api/products2", newProduct);
       setClose(true);
     } catch (err) {
       console.log(err);
